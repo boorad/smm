@@ -18,15 +18,22 @@ import multiprocessing
 
 class RawClassifier(object):
     statsData = {}
-    dataDir = "/home/gx/Sites/SMM/trunk/tracker/data"
+    dataDir = "~"
     limit = {}
     skip = 0
     p2_f_limit = 0.75
 
-    def __init__(self,traing_data_fileP1='mood_traing_p1.dat',traing_data_fileP2='mood_traing.dat',data_p_file='tweets_positive_raw.dat',data_n_file='tweets_negative_raw.dat'):
+    def __init__(self,
+                 dataDir = "~",
+                 training_data_fileP1 = 'mood_training_p1.dat',
+                 training_data_fileP2 = 'mood_training.dat',
+                 data_p_file = 'tweets_positive_raw.dat',
+                 data_n_file = 'tweets_negative_raw.dat'):
 
-        self.clsP1 = MoodDetectTrainer(data_file = traing_data_fileP1)
-        self.clsP2 = MoodDetectTrainer(data_file = traing_data_fileP2)
+        self.dataDir = dataDir
+
+        self.clsP1 = MoodDetectTrainer(data_file = training_data_fileP1)
+        self.clsP2 = MoodDetectTrainer(data_file = training_data_fileP2)
 
         self.langClassifier = LangDetect(supportedLangs)
 
@@ -180,29 +187,49 @@ class RawClassifier(object):
         print file
         print rows,breakes
 
+def usage():
+    print """
+python tweetClassifier.py args
+
+ where args are:
+  1 data_dir
+  2 training_data_file_p1
+  3 training_data_file_p2
+  4 data_positive_file
+  5 data_negative_file
+"""
+
+def main(argv):
+
+    if len(argv) != 5:
+        usage()
+    else:
+        cls = RawClassifier(
+            dataDir=argv[0],
+            traing_data_fileP1=argv[1],
+            traing_data_fileP2=argv[2],
+            data_p_file=argv[3],
+            data_n_file=argv[4])
+
+        # limit the number of tweets for en
+        # cls.limit['en'] = 150000
+        # default lang limit
+        # cls.limit['default'] = 1000
+        # second filter threshold
+        cls.p2_f_limit = 0.6
+        # do not strip icons from training data
+        cls.classifyP1(stripSmiles=False)
+        cls.classifyP2()
+        cls.clsP2.save()
+
+        # train test data
+
+        # cls = RawClassifier(traing_data_fileP1='mood_traing_test_50000.dat',traing_data_fileP2='mood_traing.dat',data_p_file='tweets_positive_raw.dat',data_n_file='tweets_negative_raw.dat')
+        # cls.skip = 300000
+        # cls.limit['en'] = 50000
+        # cls.limit['deafult'] = 1000
+        # cls.classifyP1(stripSmiles=True)
+        # cls.clsP1.save()
 
 if __name__ == "__main__":
-
-    cls = RawClassifier(traing_data_fileP1='mood_traing_p1.dat',
-                        traing_data_fileP2='mood_traing_150k_1k_0.6.dat',
-                        data_p_file='tweets_positive_raw.dat',
-                        data_n_file='tweets_negative_raw.dat')
-    # limit the number of tweets for en
-    cls.limit['en'] = 150000
-    # default lang limit
-    cls.limit['default'] = 1000
-    # second filter threshold
-    cls.p2_f_limit = 0.6
-    # do not strip icons from trainging data
-    cls.classifyP1(stripSmiles=False)
-    cls.classifyP2()
-    cls.clsP2.save()
-
-    # train test data
-
-    #cls = RawClassifier(traing_data_fileP1='mood_traing_test_50000.dat',traing_data_fileP2='mood_traing.dat',data_p_file='tweets_positive_raw.dat',data_n_file='tweets_negative_raw.dat')
-    #cls.skip = 300000
-    #cls.limit['en'] = 50000
-    #cls.limit['deafult'] = 1000
-    #cls.classifyP1(stripSmiles=True)
-    #cls.clsP1.save()
+    main(sys.argv[1:])
