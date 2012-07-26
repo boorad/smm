@@ -34,9 +34,10 @@ class MoodDetectTrainer(object):
     raw_data = None
 
 
-    def __init__(self,classifierClass=nltk.NaiveBayesClassifier,data_file = "mood_training.dat"):
+    def __init__(self,classifierClass=nltk.NaiveBayesClassifier,
+                 data_file = "mood_training.dat"):
         self.CLSclassifier = classifierClass
-        self.fileName = os.path.join(os.path.dirname(os.path.abspath(__file__)),'../data', data_file)
+        self.fileName = data_file
 
 
     def train(self,TrainData):

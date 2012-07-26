@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.6
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import sys
@@ -17,7 +17,7 @@ import os
 import cPickle
 
 HOST, PORT = "", 6666
-
+training_data = "training.dat" # default value
 
 class TCPRequestHandler(SocketServer.BaseRequestHandler):
 
@@ -73,7 +73,8 @@ class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
     @staticmethod
     def loadCls():
         ThreadedTCPServer.langCls = LangDetect(supportedLangs)
-        ThreadedTCPServer.moodCls = MoodDetect(MoodDetectTrainer())
+        ThreadedTCPServer.moodCls = \
+            MoodDetect(MoodDetectTrainer(data_file=training_data))
 
 
 class serverDaemon(Daemon):
@@ -96,7 +97,8 @@ if __name__ == "__main__":
     daemon = serverDaemon(pidfile=PID,stderr=stderr,stdout=stdout)
 
 
-    if len(sys.argv) == 2:
+    if len(sys.argv) == 3:
+        training_data = sys.argv[2]
         if 'start' == sys.argv[1]:
             print 'starting...'
             ThreadedTCPServer.loadCls()
@@ -126,5 +128,5 @@ if __name__ == "__main__":
             sys.exit(0)
 
     else:
-        print "usage: %s start|stop|restart" % sys.argv[0]
+        print "usage: %s start|stop|restart training_data_file" % sys.argv[0]
         sys.exit(2)

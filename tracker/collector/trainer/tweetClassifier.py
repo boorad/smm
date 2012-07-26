@@ -48,8 +48,8 @@ class RawClassifier(object):
 
 
     def classifyP1(self,stripSmiles=False):
-        self.classifiyRaw(self.tweetsNFile,'n',stripSmiles)
-        self.classifiyRaw(self.tweetsPFile,'p',stripSmiles)
+        self.classifyRaw(self.tweetsNFile,'n',stripSmiles)
+        self.classifyRaw(self.tweetsPFile,'p',stripSmiles)
         self.clsP1.train(self.training_data_p1)
         print "done training P1"
 
@@ -132,7 +132,7 @@ class RawClassifier(object):
 
 
 
-    def classifiyRaw(self,file,mood,stripSmiles):
+    def classifyRaw(self,file,mood,stripSmiles):
         while True:
             try:
                 tweet = cPickle.load(file)

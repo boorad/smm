@@ -14,7 +14,7 @@ class streamCollector(threading.Thread):
     """ List of keywords to track"""
     trackingK = [':)']
 
-    """ Limit (how many tweets should be received before quitting ) """
+    """ Limit (how many tweets should be received before quitting) """
     limit = 1000000
 
     """ Twitter user/pass"""
@@ -29,7 +29,9 @@ class streamCollector(threading.Thread):
         self.c = 0
 
     def collect(self):
-        stream = tweetstream.TrackStream(self.twitterUser, self.twitterPass ,keywords=self.trackingK, url='https://stream.twitter.com/1/statuses/filter.json')
+        url = 'https://stream.twitter.com/1/statuses/filter.json'
+        stream = tweetstream.TrackStream(self.twitterUser, self.twitterPass,
+                                         keywords=self.trackingK, url=url)
         for tweet in stream:
 
             if self.c and self.c % 1000 == 0:
@@ -61,7 +63,8 @@ class streamCollector(threading.Thread):
 
 class streamWriter(threading.Thread):
 
-    fileName = os.path.abspath(os.path.join( os.curdir,os.path.normpath('../../data/tweets_positive_raw.dat')))
+    fileName = os.path.abspath(os.path.join( os.curdir,
+        os.path.normpath('../../data/tweets_positive_raw.dat')))
     data = []
 
     def __init__(self,tweetsQ,stop_event):
