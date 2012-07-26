@@ -22,10 +22,10 @@ tweetsNFile = "/home/gx/Sites/SMM/trunk/tracker/data/tweets_negative_test.dat"
 
 def stripSmiles(text):
         emos = [':)',':-)',';-)',': )',':d','=)',':p',';)','<3',':(',':-(',': (']
-        
+
         for item in emos:
             text = text.replace(item,"")
-        return text 
+        return text
 
 
 def classify(file,m):
@@ -34,17 +34,17 @@ def classify(file,m):
         line = 0
         c = 0
         while True:
-            
+
             if c > 100000:
                 break
-            
+
             text = linecache.getline(file, skip + line)
-            
+
             line +=1
             if not text:
                 break
-            
-            
+
+
             if text:
                 try:
                     tweets = [{'text':unicode(text)},
@@ -52,38 +52,38 @@ def classify(file,m):
                               ]
                 except:
                     continue
-                    
+
                 tweet =  MCC.classify(tweets,'xxxxx')
                 if tweet[0]['x_lang']=='en':
-                    
+
                     c += 1
-                    
+
                     if m =='p':
                         cls_data['pc'] +=1
                         if tweet[0]['x_mood'] > 0:
                             cls_data['p#'] +=1
-                            
+
                         if tweet[1]['x_mood'] > 0:
                             cls_data['p'] +=1
-                            
+
                     if m =='n':
                          cls_data['nc'] +=1
-                         
+
                          if tweet[0]['x_mood'] < 0:
                             cls_data['n#'] +=1
-                        
+
                          if tweet[1]['x_mood'] < 0:
                             cls_data['n'] +=1
-            
-            
+
+
             if c % 1000 == 0:
                 printStats()
-                
-                    
-                        
 
 
-                  
+
+
+
+
 
 
 
@@ -96,10 +96,10 @@ def rewriteData(f,t):
                 break
             except:
                 pass
-            
+
             if tweet and tweet.get('text'):
                 tweet['text'] = unicode(tweet.get('text').strip('\r').strip('\n'))
-             
+
                 t.write(tweet['text'] + '\n')
 
 
@@ -119,6 +119,3 @@ def printStats(x=False):
 
 classify(tweetsPFile,'p')
 classify(tweetsNFile,'n')
-
-
-
