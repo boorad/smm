@@ -19,7 +19,7 @@ Install all NLTK Corpora ( needed langid, Porter Stemmer, wordnet, stopwords )
 Start the classification daemon:
 
 	cd {smm}/tracker
-	python moodClassifierd.py debug
+	python moodClassifierd.py debug /path/to/training.dat
 
 Wait few minutes till you see:
 
@@ -67,7 +67,7 @@ This is perhaps the most important part, as it is responsible for accuracy of th
 For good results it is important to build a better data set.
 
 
-### Build Training Dataset
+#### Build Training Dataset
 
 The first part of building the data set is collecting raw data, that can be done using
 
